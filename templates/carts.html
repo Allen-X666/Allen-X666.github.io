@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入和index.html相同的CSS资源 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>购物车</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+      .container {
+            padding: 2rem;
+        }
+        /* 优化搜索栏样式 */
+      .search-box {
+            position: relative;
+            margin-right: 2rem; /* 增加右侧间距 */
+        }
+      .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+      .search-box input {
+            padding-left: 35px; /* 为图标留出空间 */
+            border-radius: 20px; /* 圆角边框 */
+        }
+        /* 商品图片右移 */
+      .list-unstyled li img {
+            margin-left: 1rem; /* 向右移动1rem */
+        }
+        /* 优化增加和减少图标样式 */
+      .list-unstyled li button[class*="fa-minus"],
+      .list-unstyled li button[class*="fa-plus"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+      .list-unstyled li button[class*="fa-minus"]:hover,
+      .list-unstyled li button[class*="fa-plus"]:hover {
+            background-color: #0056b3;
+        }
+        /* 优化删除图标样式 */
+      .list-unstyled li button[class*="fa-trash"] {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+      .list-unstyled li button[class*="fa-trash"]:hover {
+            background-color: #c82333;
+        }
+
+        .add-to-cart-btn i {
+            margin-right: 0.5rem;
+        }
+      .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        /* 删除增加、减少、删除按钮的黑色边框 */
+      .list-unstyled li button[class*="fa-minus"],
+      .list-unstyled li button[class*="fa-plus"],
+      .list-unstyled li button[class*="fa-trash"] {
+            outline: none; /* 移除聚焦时的边框 */
+            box-shadow: none; /* 移除可能的阴影边框 */
+        }
+        /* 修改结算框样式 */
+        .settlement-box {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 20px;
+            position: fixed; /* 使用固定定位 */
+            right: 20px; /* 距离右侧 20px */
+            bottom: 20px; /* 距离底部 20px */
+            z-index: 1000; /* 设置层级，确保在其他元素之上 */
+        }
+        .settlement-box h2 {
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .settlement-box p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .total-price {
+            font-weight: bold;
+            color: #f40;
+        }
+        .settlement-box button {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .settlement-box button:hover {
+            background-color: #e68a00;
+        }
+        /* 新增功能按钮样式 */
+      .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+      .action-buttons button {
+            background-color: transparent;
+            color: #666;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+      .action-buttons button:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- 复用index.html的导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">购物网站</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" placeholder="搜索商品...">
+                </div>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:products_list' %}">商品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'carts:carts_list' %}">购物车 <i class="fas fa-shopping-cart"></i></a>
+                    </li>
+                    {% if username %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:user_center' %}">您好：{{ username }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">退出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="./register">注册</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./login">登录</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- 购物车标题 -->
+    <div class="container">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">购物车</h1>
+    </div>
+    <!-- 购物车商品列表 -->
+    <style>
+        /* 新增或修改样式 */
+        .product-info-box {
+            margin-left: 20px; /* 减小左边距 */
+            padding: 1rem; /* 减小内边距 */
+        }
+        .product-info-box img {
+            width: 100px; /* 减小图片宽度 */
+            height: 100px; /* 减小图片高度 */
+        }
+        .product-info-box h2 {
+            font-size: 1rem; /* 减小标题字体大小 */
+        }
+        .product-info-box p {
+            font-size: 0.9rem; /* 减小描述字体大小 */
+        }
+    </style>
+    <!-- 修改容器类名并减小边距 -->
+    <div class="container product-info-box"> 
+        <div class="bg-white shadow rounded-3 overflow-hidden">
+            <ul class="list-unstyled m-0">
+                <li class="d-flex align-items-center py-2 px-3 border-bottom border-gray-200">
+                    <!-- 调整图片尺寸 -->
+                    <img src="{{ pros.image.url }}" alt="商品图片" class="w-20 h-20 object-cover rounded-3" style="width: 100px; height: 100px;"> 
+                    <div class="ms-3 flex-grow-1">
+                        <!-- 调整标题字体大小 -->
+                        <h2 class="text-sm font-medium text-gray-800">{{ pros.name }}  </h2> 
+                        <!-- 调整价格字体大小 -->
+                        <p class="text-gray-600 text-sm">${{ pros.price }}</p> 
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-3 p-1">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <input type="number" value="1" class="w-12 text-center border border-gray-300 rounded-3">
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-3 p-1">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <button class="ms-4 text-red-600 hover:text-red-800">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </li>
+               
+            </ul>
+        </div>
+    </div>
+    <!-- 调整结算信息部分 -->
+    <div class="container">
+        <div class="settlement-box">
+            <h2>结算明细</h2>
+            <div class="action-buttons">
+                <button>全选</button>
+                <button>删除</button>
+            </div>
+            <p>已选商品: 1</p>
+            <p>{{ pros.name }}  ¥{{ pros.price }}</p>
+            <p class="total-price">合计: ¥{{ pros.price }}</p>
+            <button>结算</button>
+        </div>
+    </div>
+    <!-- 引入和index.html相同的Bootstrap JS资源 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
