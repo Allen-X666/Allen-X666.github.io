@@ -1,13 +1,18 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
+from users.models import *
 def user_center(request):
-    username=request.session.get('uid')
-    context={
-        'username':username,
-    }
+    username = request.session.get('uid')
+    user = None
     if username:
-        return render(request,'user_center.html',context=context)
-    else:
-        return render(request,'user_center.html')
+        try:
+            user = UserInfo.objects.get(username1=username)
+        except UserInfo.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+    context = {
+        'username': username,
+        'user': user,
+    }
+    return render(request, 'user_center.html', context=context)
 
 

@@ -2,22 +2,28 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from carts.models import Cart
-from users.models import UserInfor
+from users.models import UserInfor,UserInfo
 from products.models import Product
 
 
 #首页
 def index(request):
-    sessions=request.session.get('uid')
-    products=Product.objects.all()
-    content={
-        'username':sessions,
-        'products':products,
-    }
+    sessions = request.session.get('uid')
+    user = None
     if sessions:
-        return render(request,'index.html',context=content)
-    else:
-        return render(request,'index.html',{'products':products})
+        try:
+            user = UserInfo.objects.get(username1=sessions)
+        except UserInfo.DoesNotExist:
+            # 处理用户不存在的情况，例如清除会话并重定向到登录页面
+            request.session.flush()
+            return redirect('login')
+    products = Product.objects.all()
+    content = {
+        'username': sessions,
+        'products': products,
+        'user': user,
+    }
+    return render(request, 'index.html', context=content)
 
 #注册页面
 def register(request):

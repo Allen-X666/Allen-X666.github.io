@@ -256,7 +256,7 @@
                     </li>
                     {% if username %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:user_center' %}">您好：{{ username }}</a>
+                            <a class="nav-link" href="{% url 'users:user_center' %}">您好：{{ user.uname }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./logout">退出</a>

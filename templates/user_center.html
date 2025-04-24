@@ -85,7 +85,7 @@
                         个人中心
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#personal-info">个人信息管理</a></li>
+                        <li><a class="dropdown-item" href="personal-info">个人信息管理</a></li>
                         <li><a class="dropdown-item" href="#order-management">订单管理</a></li>
                         <li><a class="dropdown-item" href="#account-assets">账户资产</a></li>
                         <li><a class="dropdown-item" href="#favorites">收藏与关注</a></li>
@@ -106,17 +106,17 @@
                     </li>
                     {% if username %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">您好：{{ username }}</a>
+                            <a class="nav-link active" href="{% url 'users:user_center' %}">您好：{{ username }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./logout">退出</a>
+                            <a class="nav-link" href="{% url 'logout' %}">退出</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="./register">注册</a>
+                            <a class="nav-link" href="{% url 'register' %}">注册</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./login">登录</a>
+                            <a class="nav-link" href="{% url 'login' %}">登录</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -143,7 +143,7 @@
                 <div class="flex items-center mb-2">
                     <img src="https://picsum.photos/80/80" alt="头像" class="rounded-full mr-4">
                     <div>
-                        <p class="text-gray-700">昵称: <span class="font-semibold">张三</span></p>
+                        <p class="text-gray-700">昵称: <span class="font-semibold">{{ user.uname }}</span></p>
                         <p class="text-gray-700">性别: <span class="font-semibold">男</span></p>
                         <p class="text-gray-700">出生日期: <span class="font-semibold">1990-01-01</span></p>
                     </div>
@@ -153,17 +153,17 @@
             <!-- 联系方式 -->
             <div class="mb-4">
                 <h3 class="text-lg font-semibold mb-2">联系方式</h3>
-                <p class="text-gray-700">手机号码: <span class="font-semibold">13800138000</span></p>
-                <p class="text-gray-700">电子邮箱: <span class="font-semibold">example@example.com</span></p>
+                <p class="text-gray-700">手机号码: <span class="font-semibold">{{ user.phone }}</span></p>
+                <p class="text-gray-700">电子邮箱: <span class="font-semibold">{{ user.email }}</span></p>
                 <a href="#" class="text-blue-500 hover:underline">修改</a>
             </div>
             <!-- 收货地址 -->
             <div>
                 <h3 class="text-lg font-semibold mb-2">收货地址</h3>
                 <div class="bg-gray-100 p-4 rounded-md mb-2">
-                    <p class="text-gray-700">姓名: <span class="font-semibold">张三</span></p>
+                    <p class="text-gray-700">姓名: <span class="font-semibold">{{ user.uname }}</span></p>
                     <p class="text-gray-700">地址: <span class="font-semibold">北京市朝阳区 XX 路 XX 号</span></p>
-                    <p class="text-gray-700">手机号码: <span class="font-semibold">13800138000</span></p>
+                    <p class="text-gray-700">手机号码: <span class="font-semibold">{{ user.phone }}</span></p>
                     <span class="text-green-500 font-semibold">默认地址</span>
                     <div class="flex mt-2">
                         <a href="#" class="text-blue-500 hover:underline mr-4">编辑</a>
@@ -498,6 +498,6 @@
         });
     </script>
 </body>
-
+ 
 </html>
     
